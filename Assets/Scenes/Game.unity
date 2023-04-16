@@ -20806,7 +20806,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Not Enought Resources
+  m_text: Not Enough Resources
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: b3f502c18921be54ca45fad737d523df, type: 2}
   m_sharedMaterial: {fileID: 5750169285736438567, guid: b3f502c18921be54ca45fad737d523df, type: 2}
