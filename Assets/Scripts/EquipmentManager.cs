@@ -66,6 +66,6 @@ public class EquipmentManager : MonoBehaviour
     public float Performance()
     {
 
-        return PlayerPrefs.GetInt("eLv") * performance;
+        return (PlayerPrefs.GetInt("eLv") - 1) * performance;
     }
 }
