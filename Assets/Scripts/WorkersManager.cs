@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
-using UnityEditor.U2D.Path;
 using UnityEngine;
 
 public class WorkersManager : MonoBehaviour
@@ -37,7 +36,7 @@ public class WorkersManager : MonoBehaviour
         InvokeRepeating("CheckWorkers", 0f, 0.5f);
     }
 
-
+    //Kiem tra xem worker da duoc unlock chua
     public void CheckWorkers()
     {
         foreach (var item in price_Text)
@@ -58,6 +57,7 @@ public class WorkersManager : MonoBehaviour
         }
     }
 
+    //Thue worker
     public void BuyWorker(int i)
     {
         if (i == 1)

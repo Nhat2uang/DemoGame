@@ -15,6 +15,7 @@ public class EquipmentManager : MonoBehaviour
     public TMP_Text level_Text;
     public TMP_Text shop_Level;
     public GameObject notE;
+    public GameObject maxLv;
 
     private void Awake()
     {
@@ -27,32 +28,44 @@ public class EquipmentManager : MonoBehaviour
         InvokeRepeating("CheckLevel", 0f, 0.5f);
     }
 
+    //Kiem tra va update level cua cong cu
     public void CheckLevel()
     {
         level = PlayerPrefs.GetInt("eLv");
-        performance *= level;
         level_Text.text = "Level " + level;
         shop_Level.text = "Level " + level;
     }
 
+    //Luu level cong cu vao PlayerPrefts
     public void SaveLevel()
     {
         PlayerPrefs.SetInt("eLv", level);
         PlayerPrefs.Save();
     }
-
+    
+    //Nang cap cong cu
     public void UpgradeEquip()
     {
-        if (ResourcesManager.Instance.goldA >= equipment.price)
+        if (level < 5)
         {
-            ResourcesManager.Instance.goldA -= equipment.price;
-            level++;
+            if (ResourcesManager.Instance.goldA >= equipment.price)
+            {
+                ResourcesManager.Instance.goldA -= equipment.price;
+                level++;
+            }
+            else
+            {
+                notE.SetActive(true);
+            }
+            SaveLoad.Instance.Save();
         }
-        else
-        {
-            notE.SetActive(true);
-        }
+        else maxLv.SetActive(true);
+    }
 
-        SaveLoad.Instance.Save();
+    //Lay ra gia tri performance de tinh toan nang suat
+    public float Performance()
+    {
+
+        return PlayerPrefs.GetInt("eLv") * performance;
     }
 }

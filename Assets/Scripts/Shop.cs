@@ -6,18 +6,8 @@ using UnityEngine;
 public class Shop : MonoBehaviour
 {
     public GameObject shopPanel;
-    // Start is called before the first frame update
-    void Start()
-    {
-       
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
-
+    //Bat tat cua so cua hang
     public void OpenShop()
     {
         shopPanel.SetActive(true);

@@ -8,6 +8,7 @@ TagManager:
   - Product
   - ShopProduct
   - Worker
+  - LandGUI
   layers:
   - Default
   - TransparentFX

@@ -36,6 +36,7 @@ public class LandsManager : MonoBehaviour
         InvokeRepeating("CheckLands", 0f, 0.5f);
     }
 
+    //Kiem tra xem dat da duoc mua hay chua
     public void CheckLands()
     {
         foreach (var item in price_Text)
@@ -71,6 +72,7 @@ public class LandsManager : MonoBehaviour
         }
     }
 
+    //Mua dat
     public void BuyLand(int i)
     {
         if (i == 1)
@@ -140,6 +142,7 @@ public class LandsManager : MonoBehaviour
         }
     }
 
+    //Kiem tra vi tri cua dat
     public GameObject GetLandPosition(int i)
     {
         if (i < 5)

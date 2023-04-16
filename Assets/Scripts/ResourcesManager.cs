@@ -11,6 +11,7 @@ public class ResourcesManager : MonoBehaviour
     public int goldA;
     public TMP_Text gold_Text;
     public GameObject notE;
+    public GameObject winPanel;
 
     [Header("TomatoSeed")]
     public string tName;
@@ -85,12 +86,7 @@ public class ResourcesManager : MonoBehaviour
         InvokeRepeating("UpdateAmount", 0f, 0.25f);
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-
-    }
-
+    //Luu gia tri Resources vao PlayerPrefts
     public void SaveAmount()
     {
         PlayerPrefs.SetInt("Money", goldA);
@@ -105,6 +101,7 @@ public class ResourcesManager : MonoBehaviour
         PlayerPrefs.Save();
     }
 
+    //Load gia tri cua Resources
     public void LoadAmount()
     {
         goldA = PlayerPrefs.GetInt("Money");
@@ -153,6 +150,7 @@ public class ResourcesManager : MonoBehaviour
         milk_text.text = milkA.ToString();
     }
 
+    //Cap nhat gia tri cua Resources va win khi goldA = 1.000.000
     public void UpdateAmount()
     {
         gold_Text.text = goldA.ToString();
@@ -164,8 +162,14 @@ public class ResourcesManager : MonoBehaviour
         b_text.text = berryA.ToString();
         s_text.text = strawA.ToString();
         milk_text.text = milkA.ToString();
+
+        if (goldA == 1000000)
+        {
+            winPanel.SetActive(true);
+        }
     }
 
+    //Mua hat giong o cua hang
     public void BuySeed(int i)
     {
         if (i == 1)
@@ -219,10 +223,11 @@ public class ResourcesManager : MonoBehaviour
         SaveAmount();
     }
 
+    //Ban tat ca product dang co, gia tri tang theo Performance cua cong cu
     public void SellAll()
     {
         int amount = (tomatoA * tomatoPrice) + (berryA * berryPrice) + (strawA * strawPrice) + (milkA * milkPrice);
-        goldA += amount;
+        goldA += (int)(amount + amount * EquipmentManager.Instance.Performance());
         tomatoA = berryA = strawA = milkA = 0;
         SaveLoad.Instance.Save();
     }

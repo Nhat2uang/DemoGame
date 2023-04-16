@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class AutoHide : MonoBehaviour
 {
-    // Start is called before the first frame update
+    //Tu dong Hide sau 1f
     void OnEnable()
     {
         Invoke("Hide", 1f);

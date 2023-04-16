@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UIElements;
 using TMPro;
+using System;
 
 public class LandGUI : MonoBehaviour
 {
@@ -19,9 +20,9 @@ public class LandGUI : MonoBehaviour
     public TMP_Text timer2_Text;
     public float timer1;
     public float timer2;
-    bool startTimer = false;
-    bool start_timer1 = false;
-    bool start_timer2 = false;
+    public bool start_timer;
+    public bool start_timer1 = false;
+    public bool start_timer2 = false;
 
     public GameObject mode1;
     public GameObject mode2;
@@ -41,43 +42,48 @@ public class LandGUI : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        InvokeRepeating("CheckLandStatus", 0f, 0.5f);
+        TimePass();
+        Invoke("GetPlantName", 0.02f);
+        InvokeRepeating("CheckLandStatus", 0f, 0.05f);
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        if (startTimer)
-        {
-            plantName_Text.text = plantName;
-            //Cycle_Timer
-            if (start_timer1)
-            {
-                if (timer1 > 0)
-                {
-                    timer1 -= Time.deltaTime;
-                    timer1_Text.text = Mathf.Round(timer1).ToString();
-                }
-                if (timer1 < 0)
-                {
-                    timer1 = 0;
-                    SaveLandStatus(3, plantType);
-                }
-            }
+        TimeCounter();
+    }
 
-            //Life_Timer
-            if (start_timer2)
+    //Dem thoi gian
+    public void TimeCounter()
+    {
+        plantName_Text.text = plantName;
+        //Cycle_Timer
+        if (start_timer)
+        {
+            if (timer1 > 0)
             {
-                if (timer2 > 0)
-                {
-                    timer2 -= Time.deltaTime;
-                    timer2_Text.text = Mathf.Round(timer2).ToString();
-                }
-                if (timer2 < 0)
-                {
-                    timer1 = timer2 = 0;
-                    SaveLandStatus(1, 0);
-                }
+                timer1 -= Time.fixedDeltaTime;
+                timer1_Text.text = Mathf.Round(timer1).ToString();
+            }
+            if (timer1 < 0)
+            {
+                timer1 = 0;
+                SaveLandStatus(3, PlayerPrefs.GetInt("land1" + landCode));
+            }
+        }
+
+        //Life_Timer
+        if (start_timer2)
+        {
+            if (timer2 > 0)
+            {
+                timer2 -= Time.fixedDeltaTime;
+                timer2_Text.text = Mathf.Round(timer2).ToString();
+            }
+            if (timer2 < 0)
+            {
+                timer1 = timer2 = 0;
+                SaveLandStatus(1, 0);
             }
         }
     }
@@ -88,6 +94,7 @@ public class LandGUI : MonoBehaviour
     {
         status = PlayerPrefs.GetInt("land" + landCode);
         plantType = PlayerPrefs.GetInt("land1" + landCode);
+        
         if (status == 1)
         {
             PlayerPrefs.SetInt("land2" + landCode, 0);
@@ -108,7 +115,6 @@ public class LandGUI : MonoBehaviour
         {
             mode1.SetActive(false);
             mode2.SetActive(true);
-            startTimer = true;
             start_timer1 = true;
             start_timer2 = true;
 
@@ -123,8 +129,12 @@ public class LandGUI : MonoBehaviour
         }
         else if (status == 3)
         {
+            mode1.SetActive(false);
+            mode2.SetActive(true);
             start_timer1 = false;
+            start_timer2 = true;
             timer1_Text.text = "HARVEST";
+
             if (FindChildWithTag(this.gameObject, "Seed"))
             {
                 Destroy(FindChildWithTag(this.gameObject, "Seed"));
@@ -147,46 +157,76 @@ public class LandGUI : MonoBehaviour
         if (plantType == 1)
         {
             timer1 = ResourcesManager.Instance.tomatoCycle;
+            timer1 -= timer1 * EquipmentManager.Instance.Performance();
             plantName = ResourcesManager.Instance.tName;
             if (isOnLife == 0)
             {
                 timer2 = ResourcesManager.Instance.tomatoLife;
+                timer2 -= timer2 * EquipmentManager.Instance.Performance();
                 PlayerPrefs.SetInt("land2" + landCode, 1);
             }
         }
         else if (plantType == 2)
         {
             timer1 = ResourcesManager.Instance.berryCycle;
+            timer1 -= timer1 * EquipmentManager.Instance.Performance();
             plantName = ResourcesManager.Instance.bName;
             if (isOnLife == 0)
             {
                 timer2 = ResourcesManager.Instance.berryLife;
+                timer2 -= timer2 * EquipmentManager.Instance.Performance();
                 PlayerPrefs.SetInt("land2" + landCode, 1);
             }
         }
         else if (plantType == 3)
         {
             timer1 = ResourcesManager.Instance.strawCycle;
+            timer1 -= timer1 * EquipmentManager.Instance.Performance();
             plantName = ResourcesManager.Instance.sName;
             if (isOnLife == 0)
             {
                 timer2 = ResourcesManager.Instance.strawLife;
+                timer2 -= timer2 * EquipmentManager.Instance.Performance();
                 PlayerPrefs.SetInt("land2" + landCode, 1);
             }
         }
         else if (plantType == 4)
         {
             timer1 = ResourcesManager.Instance.cowCycle;
+            timer1 -= timer1 * EquipmentManager.Instance.Performance();
             plantName = ResourcesManager.Instance.cName;
             if (isOnLife == 0)
             {
                 timer2 = ResourcesManager.Instance.cowLife;
+                timer2 -= timer2 * EquipmentManager.Instance.Performance();
                 PlayerPrefs.SetInt("land2" + landCode, 1);
             }
         }
     }
 
-    //Spawn seed va check xem seed co tai hay khong de spawn ra. GetPlantInfor de tien hanh lay thoi gian cho timer1 va timer2
+    //Lay ten cho cay
+    public void GetPlantName()
+    {
+        plantType = PlayerPrefs.GetInt("land1" + landCode);
+        if (plantType == 1)
+        {
+            plantName = ResourcesManager.Instance.tName;
+        }
+        if (plantType == 2)
+        {
+            plantName = ResourcesManager.Instance.bName;
+        }
+        if (plantType == 3)
+        {
+            plantName = ResourcesManager.Instance.sName;
+        }
+        if (plantType == 4)
+        {
+            plantName = ResourcesManager.Instance.cName;
+        }
+    }
+
+    //Spawn seed. GetPlantInfor de tien hanh lay thoi gian cho timer1 va timer2
     public void Grow(int i)
     {
         status = PlayerPrefs.GetInt("land" + landCode);
@@ -236,19 +276,20 @@ public class LandGUI : MonoBehaviour
             }
             else notE.SetActive(true);
         }
-
-        //
+        
+        //Lay gia tri cho timer1 va timer2
         if (PlayerPrefs.GetInt("land" + landCode) == 2)
         {
             GetPlantInfor();
         }
     }
 
+    //Check xem seed co ton tai hay khong de spawn ra
     public void Grow2(int i)
     {
         status = PlayerPrefs.GetInt("land" + landCode);
         GameObject position = LandsManager.Instance.GetLandPosition(landCode);
-
+        
         if (i == 1)
         {
             Instantiate(tomato1, position.transform.position, tomato1.transform.rotation, this.gameObject.transform);
@@ -265,12 +306,7 @@ public class LandGUI : MonoBehaviour
         {
             Instantiate(cow1, new Vector3(position.transform.position.x + 2.5f, position.transform.position.y, position.transform.position.z), cow1.transform.rotation, this.gameObject.transform);
         }
-
-        //
-        if (PlayerPrefs.GetInt("land" + landCode) == 2)
-        {
-            GetPlantInfor();
-        }
+        SaveLandStatus(status, plantType);
     }
 
 
@@ -296,6 +332,7 @@ public class LandGUI : MonoBehaviour
         }
     }
 
+    //Bi thu hoach: Chuyen doi tu status 3 sang 2
     public void Harvested()
     {
         if (PlayerPrefs.GetInt("land" + landCode) == 3)
@@ -318,10 +355,12 @@ public class LandGUI : MonoBehaviour
             {
                 ResourcesManager.Instance.milkA += 1;
             }
+            GetPlantInfor();
             SaveLoad.Instance.Save();
         }
     }
 
+    //Save vao PlayerPrefts
     public void SaveLandStatus(int i, int j)
     {
         PlayerPrefs.SetInt("land" + landCode, i);
@@ -329,6 +368,7 @@ public class LandGUI : MonoBehaviour
         PlayerPrefs.Save();
     }
 
+    //Tim child voi tag trong mot gameobject
     GameObject FindChildWithTag(GameObject parent, string tag)
     {
         GameObject child = null;
@@ -341,5 +381,64 @@ public class LandGUI : MonoBehaviour
             }
         }
         return child;
+    }
+
+    //Tinh toan thoi gian da troi qua va apply cho timer1 timer2
+    public void TimePass()
+    {
+        DateTime savedTime = DateTime.Parse(PlayerPrefs.GetString("savedTime"));
+        DateTime currentTime = DateTime.Now;
+        TimeSpan timeSpan = currentTime.Subtract(savedTime);
+        float duration = (float)timeSpan.TotalSeconds;
+        float temp_t1 = PlayerPrefs.GetFloat("timer1" + landCode);
+        float temp_t2 = PlayerPrefs.GetFloat("timer2" + landCode);
+
+        if (PlayerPrefs.GetInt("land" + landCode) != 0)
+        {
+            if (duration >= temp_t1)
+            {
+                timer1 = -1;
+            }
+            else 
+            {
+                timer1 = temp_t1 - duration;
+            }
+
+            if (duration >= temp_t2)
+            {
+                timer2 = -1;
+            }
+            else
+            {
+                timer2 = temp_t2 - duration;
+            }
+            start_timer1 = start_timer2 = true;
+        }
+    }
+
+    //Save Khi Thoat
+    public void OnApplicationQuit()
+    {
+        if (status == 3)
+        {
+            PlayerPrefs.SetInt("land" + landCode, status);
+        }
+        PlayerPrefs.SetInt("land1" + landCode, plantType);
+        PlayerPrefs.SetFloat("timer1" + landCode, timer1);
+        PlayerPrefs.SetFloat("timer2" + landCode, timer2);
+        PlayerPrefs.SetString("savedTime", DateTime.Now.ToString());
+    }
+
+    //Save Giua Scene
+    public void SaveBetweenScenes()
+    {
+        if (status == 3)
+        {
+            PlayerPrefs.SetInt("land" + landCode, status);
+        }
+        PlayerPrefs.SetInt("land1" + landCode, plantType);
+        PlayerPrefs.SetFloat("timer1" + landCode, timer1);
+        PlayerPrefs.SetFloat("timer2" + landCode, timer2);
+        PlayerPrefs.SetString("savedTime", DateTime.Now.ToString());
     }
 }
